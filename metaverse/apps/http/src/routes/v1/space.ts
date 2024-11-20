@@ -22,7 +22,8 @@ spaceRouter.post("/", userMiddleware, async (req, res) => {
                 creatorId: req.userId!
             }
         });
-        res.json({spaceId: space.id})
+        console.log("space created")
+        res.json({spaceId: space.id, dimenssions: parsedData.data.dimensions})
         return;
     }
     

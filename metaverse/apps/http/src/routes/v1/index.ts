@@ -69,8 +69,10 @@ router.post("/signin", async (req, res) => {
             userId: user.id,
             role: user.role
         }, JWT_PASSWORD);
+        const name = parsedData.data.username;
 
         res.json({
+            name,
             token
         })
     } catch(e) {

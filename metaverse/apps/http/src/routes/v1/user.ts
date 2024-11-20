@@ -5,7 +5,9 @@ import { userMiddleware } from "../../middleware/user";
 
 export const userRouter = Router();
 
-userRouter.post("/metadata", userMiddleware, async (req, res) => {
+userRouter.post("/metadata",userMiddleware, async (req, res) => {
+    console.log("inside metadata");
+    
     const parsedData = UpdateMetadataSchema.safeParse(req.body)       
     if (!parsedData.success) {
         console.log("parsed data incorrect")
@@ -23,7 +25,7 @@ userRouter.post("/metadata", userMiddleware, async (req, res) => {
         })
         res.json({message: "Metadata updated"})
     } catch(e) {
-        console.log("error")
+        console.log(e)
         res.status(400).json({message: "Internal server error"})
     }
 })

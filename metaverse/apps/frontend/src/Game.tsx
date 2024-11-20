@@ -9,9 +9,8 @@ const Arena = () => {
 
   // Initialize WebSocket connection and handle URL params
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token') || '';
-    const spaceId = urlParams.get('spaceId') || '';
+    const token = localStorage.getItem('token') || '';
+    const spaceId = localStorage.getItem('spaceId') || '';
     setParams({ token, spaceId });
 
     // Initialize WebSocket
@@ -44,12 +43,6 @@ const Arena = () => {
     switch (message.type) {
       case 'space-joined':
         // Initialize current user position and other users
-        console.log("set")
-        console.log({
-            x: message.payload.spawn.x,
-            y: message.payload.spawn.y,
-            userId: message.payload.userId
-          })
         setCurrentUser({
           x: message.payload.spawn.x,
           y: message.payload.spawn.y,
@@ -125,10 +118,8 @@ const Arena = () => {
 
   // Draw the arena
   useEffect(() => {
-    console.log("render")
     const canvas = canvasRef.current;
     if (!canvas) return;
-    console.log("below render")
     
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -148,12 +139,8 @@ const Arena = () => {
       ctx.stroke();
     }
 
-    console.log("before curerntusert")
-    console.log(currentUser)
     // Draw current user
     if (currentUser && currentUser.x) {
-        console.log("drawing myself")
-        console.log(currentUser)
       ctx.beginPath();
       ctx.fillStyle = '#FF6B6B';
       ctx.arc(currentUser.x * 50, currentUser.y * 50, 20, 0, Math.PI * 2);
@@ -166,11 +153,7 @@ const Arena = () => {
 
     // Draw other users
     users.forEach(user => {
-    if (!user.x) {
-        return
-    }
-    console.log("drawing other user")
-    console.log(user)
+      if (!user.x) return;
       ctx.beginPath();
       ctx.fillStyle = '#4ECDC4';
       ctx.arc(user.x * 50, user.y * 50, 20, 0, Math.PI * 2);
@@ -204,21 +187,21 @@ const Arena = () => {
 
   return (
     <div className="p-4" onKeyDown={handleKeyDown} tabIndex={0}>
-        <h1 className="text-2xl font-bold mb-4">Arena</h1>
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">Token: {params.token}</p>
-          <p className="text-sm text-gray-600">Space ID: {params.spaceId}</p>
-          <p className="text-sm text-gray-600">Connected Users: {users.size + (currentUser ? 1 : 0)}</p>
-        </div>
-        <div className="border rounded-lg overflow-hidden">
-          <canvas
-            ref={canvasRef}
-            width={2000}
-            height={2000}
-            className="bg-white"
-          />
-        </div>
-        <p className="mt-2 text-sm text-gray-500">Use arrow keys to move your avatar</p>
+      <h1 className="text-2xl font-bold mb-4">Arena</h1>
+      <div className="mb-4">
+        <p className="text-sm text-gray-600">Token: {params.token}</p>
+        <p className="text-sm text-gray-600">Space ID: {params.spaceId}</p>
+        <p className="text-sm text-gray-600">Connected Users: {users.size + (currentUser ? 1 : 0)}</p>
+      </div>
+      <div className="border rounded-lg overflow-hidden">
+        <canvas
+          ref={canvasRef}
+          width={2000}
+          height={2000}
+          className="bg-white"
+        />
+      </div>
+      <p className="mt-2 text-sm text-gray-500">Use arrow keys to move your avatar</p>
     </div>
   );
 };
